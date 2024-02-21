@@ -1,45 +1,38 @@
-from typing import List, Dict
+from tabulate import tabulate
+from dfs import *
 
 
-def dfs_recursive(graph: Dict[int, List[int]], vertex: int, visited=None) -> List[int]:
-    if visited is None:
-        visited = []
+def procedure() -> None:
+    print("Adjacency matrix:")
+    print(tabulate(A, tablefmt="plain"))
+    print(f"Adjacency list:\n{adjmat_to_adjlist(A)}\n")
+    print("Adjacency matrix:")
+    print(tabulate(B, tablefmt="plain"))
+    print(f"Adjacency list:\n{adjmat_to_adjlist(B)}\n")
 
-    visited.append(vertex)
+    print(f"Graph: {G}")
+    print(f"DFS recursive: {dfs_recursive(G, 1)}")
+    print(f"DFS iterative: {dfs_iterative(G, 1)}\n")
 
-    for neighbour in graph[vertex]:
-        if neighbour not in visited:
-            dfs_recursive(graph, neighbour, visited)
-    return visited
+    result = []
+    for graph in Graphs:
+        result.append(is_acyclic(graph))
 
-
-def dfs_iterative(graph: Dict[int, List[int]], vertex: int) -> List[int]:
-    stack = [vertex]
-    visited = []
-
-    while stack:
-        vertex = stack.pop()
-
-        if vertex not in visited:
-            visited.append(vertex)
-            for neighbour in graph[vertex][::-1]:
-                stack.append(neighbour)
-
-    return visited
-
-
-def is_acyclic(graph: Dict[int, List[int]]) -> bool:
-    visited = []
-    for vertex, neighbours in graph.items():
-        for neighbour in neighbours:
-            if neighbour in visited:
-                return False
-            if vertex not in visited:
-                visited.append(vertex)
-    return True
+    print(tabulate({"Graphs": Graphs, "is_acyclic?": result}, headers="keys", tablefmt="github"))
 
 
 if __name__ == '__main__':
+    A = [
+        [0, 1, 0],
+        [0, 0, 1],
+        [1, 2, 0]
+    ]
+
+    B = [
+        [0, 1],
+        [0, 0]
+    ]
+
     G = {
         1: [2, 3, 5],
         2: [1, 4, 6],
@@ -55,10 +48,4 @@ if __name__ == '__main__':
               {1: [2, 3], 2: [4], 3: [4]}, {1: [2, 3], 2: [3]},
               {1: [2], 2: [3], 3: [1, 4]}]
 
-    # res = dfs_recursive(G, 1)
-    # print(res)
-    # res = dfs_iterative(G, 1)
-    # print(res)
-
-    for graph in Graphs:
-        print(graph, is_acyclic(graph))
+    procedure()
